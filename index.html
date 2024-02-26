@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            width: 100%;
+            height: 60vh;
+        }
+        #return-to-initial-position {
+    position: absolute;
+    top: 20px; /* Adjust as needed */
+    right: 20px; /* Adjust as needed */
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000; /* Ensure button is above other elements */
+}
+
+#return-to-initial-position img {
+    width: 40px; /* Adjust as needed */
+    height: 40px; /* Adjust as needed */
+}
+        #ride-details {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            width: 100%;
+            max-width: 100vw; /* Max width of the viewport */
+            text-align: center;
+        }
+        .row {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .icons {
+            margin: 0 5px; /* Adjust as needed */
+        }
+        .icons img {
+            width: 20px;
+            height: 20px;
+        }
+        .driver-details {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .driver-image {
+            border-radius: 50%;
+            width: 80px; /* Adjust size as needed */
+            height: 80px; /* Adjust size as needed */
+            margin-right: 20px;
+        }
+        .driver-info {
+            text-align: left;
+        }
+        .contact-icons img {
+            width: 30px; /* Adjust size as needed */
+            height: 30px; /* Adjust size as needed */
+            margin-left: 10px;
+        }
+        .dotted-line {
+            border-bottom: 2px dotted #FCC419;
+            flex-grow: 1;
+            margin-bottom: 30px;
+        }
+        .dotted-line2 {
+            border-bottom: 2px dotted #fcfcf9;
+            flex-grow: 1;
+            margin-bottom: 30px;
+        }
+        .icons {
+            display: inline-block; /* Ensure icons are displayed inline */
+            position: relative; /* Position for absolute positioning of dots */
+            padding: 5px; /* Add padding for spacing around the icon */
+            width: 64px; /* Set the width of the icon container */
+            height: 64px; /* Set the height of the icon container */
+            color: #8ef725;
+        }
+        .icons img {
+            width: 50%; /* Ensure image takes full width of container */
+            height: 50%; /* Ensure image takes full height of container */
+        }
+        .icons2 {
+            color: aliceblue;
+        }
+        .icons1 {
+            width: 64px; /* Set the width of the icon container */
+            height: 64px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="return-to-initial-position" onclick="returnToInitialPosition()">
+        <img src="icons8-gps-48.png" alt="Return to Initial Position">
+    </div>
+
+    <div id="ride-details" style="width: 100%; max-width: 100vw; text-align: center;">
+        <div class="row">
+            <div class="icons2">
+                <img src="icons8-clock-50.png" alt="Estimated Time">
+            </div>
+            <p style="color: white;">Estimated Time of Arrival: 5 minutes</p>
+        </div>
+
+        <div class="row">
+            <div class="icons">
+                <img src="icons8-notes-64.png" alt="Icon">
+            </div>
+            <hr class="dotted-line"> <!-- Dotted line -->
+            <div class="icons">
+                <img src="icons8-cooking-64.png" alt="Icon">
+            </div>
+            <hr class="dotted-line"> <!-- Dotted line -->
+            <div class="icons">
+                <img src="icons8-bicycle-50.png" alt="Icon">
+            </div>
+            <hr class="dotted-line2"> <!-- Dotted line -->
+            <div class="icons1">
+                <img src="icons8-tick-48.png" alt="Icon">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="driver-details">
+                <img src="icons8-person-100.png" alt="Driver Image" class="driver-image">
+                <div class="driver-info">
+                    <h2 style="color: white;">John Doe</h2>
+                    <p style="color: white;">Rating: 4.8</p>
+                    <p style="color: white;">Vehicle: Toyota Camry</p>
+                    <p style="color: white;">License Plate: ABC123</p>
+                </div>
+                <div class="contact-icons">
+                    <img src="icons8-call-32.png" alt="Call Icon">
+                    <img src="icons8-messages-50.png" alt="Message Icon">
+                </div>
+            </div>
+        </div>
+
+        <!-- Button to return to initial map position -->
+
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      var initialPosition = [43.436048743940866, -80.47758890985448]; // Define the initial position
+
+    var map = L.map('map').setView(initialPosition, 15.5); // Set initial position and zoom level
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+
+        // Define the coordinates of the route points
+        var routePoints = [
+            [43.43607940708025, -80.47788446678841], // Start point
+            [43.437296327227386, -80.47662944277836], // Turn left
+            [43.438430471530715, -80.47836987142804], // Turn right
+            [43.439847547559104, -80.47670591719236],     // Turn right
+            [43.43875447663493, -80.47494001850751],  // Turn left
+            [43.441281940433655, -80.47227837115412], // Turn left
+            [43.44218919781162, -80.4743758108089],   // Turn right
+            [43.444360079881186, -80.47250150303229]  // Destination
+        ];
+
+        // Create a polyline using the route points
+        var polyline = L.polyline(routePoints, {color: 'red'}).addTo(map);
+
+        // Fit the map to the bounds of the polyline
+        map.fitBounds(polyline.getBounds());
+
+        // Add a marker with a home icon at the destination
+        var homeIcon = L.icon({
+            iconUrl: '—Pngtree—vector house icon_4163914.png',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -30]
+        });
+
+        var destination = L.marker([43.444360079881186, -80.47250150303229], { icon: homeIcon }).addTo(map);
+
+        // Add a green dot at the start point to indicate current location
+        var currentLocationMarker = L.circleMarker([43.43607940708025, -80.47788446678841], {
+            color: 'black', // Circle border color
+            fillColor: 'green', // Circle fill color
+            fillOpacity: 1, // Opacity of the circle fill
+            radius: 5 // Radius of the circle
+        }).addTo(map);
+
+        // Function to return map to initial position
+        function returnToInitialPosition() {
+            map.setView(initialPosition,15.5); // Pan the map to initial position
+        }
+    </script>
+</body>
+</html>
